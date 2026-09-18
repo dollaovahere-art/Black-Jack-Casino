@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grand Casino 4-Player Blackjack</title>
+    <style>
+        body { font-family: sans-serif; background-color: #0b3319; color: white; text-align: center; margin: 0; padding: 10px; }
+        h1 { color: #ffd700; margin: 5px 0; font-size: 1.6rem; }
+        .casino-table { max-width: 1000px; margin: 0 auto; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 15px; border: 3px solid #ffd700; }
+        .dealer-section { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px dashed rgba(255,215,0,0.4); }
+        .players-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
+        .player-box { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; border: 2px solid transparent; }
+        .player-box.active-turn { border-color: #ffd700; background: rgba(255,215,0,0.1); }
+        .name-input { background: #000; border: 1px solid #ffd700; color: white; border-radius: 4px; padding: 4px; width: 85%; text-align: center; font-weight: bold; }
+        .hand-title { font-size: 0.95rem; color: #ffd700; margin: 5px 0; font-weight: bold; }
+        .player-stats { font-size: 0.8rem; margin-bottom: 5px; }
+        .cards-container { display: flex; justify-content: center; gap: 4px; min-height: 80px; }
+        .card { background: white; color: black; width: 50px; height: 75px; border-radius: 6px; display: flex; flex-direction: column; justify-content: space-between; padding: 4px; box-sizing: border-box; font-size: 1rem; font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
+        .card .suit-center { font-size: 1.4rem; align-self: center; }
+        .card .corner-bottom { transform: rotate(180deg); }
+        .red { color: #d12c2c; }
+        .hidden-card { background: linear-gradient(135deg, #7f8c8d 25%, #2c3e50 25%, #2c3e50 50%, #7f8c8d 50%, #2c3e50 100%); background-size: 8px 8px; border: 1px solid white; }
+        .dashboard { background: rgba(0,0,0,0.5); padding: 12px; border-radius: 10px; }
+        #status-message { font-size: 1.1rem; margin-bottom: 10px; min-height: 22px; color: #ffd700; }
+        .btn-group { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+        button { background: #ffd700; color: #0b3319; border: none; padding: 6px 12px; font-weight: bold; border-radius: 4px; cursor: pointer; }
+        button:disabled { background: #555; color: #222; cursor: not-allowed; }
+        .bet-btn { background: #2da15f; color: white; }
+        .all-in-btn { background: #d4ac0d; color: black; }
+        .bail-btn { background: #c0392b; color: white; font-size: 0.7rem; padding: 3px 6px; }
+        #deal-btn { background: #e67e22; color: white; }
+        #reset-btn { background: #7f8c8d; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Grand Casino 4-Player Blackjack</h1>
+    <div class="casino-table">
+        <div class="dealer-section">
+            <div class="hand-title" id="dealer-title">Dealer: ?</div>
+            <div class="cards-container" id="dealer-cards"></div>
+        </div>
+        <div class="players-grid">
+            <div class="player-box" id="p0-box">
+                <input type="text" class="name-input" id="p0-name" value="Player 1" onchange="updateNames()">
+                <div class="hand-title" id="p0-title">Score: 0</div>
+                <div class="player-stats" id="p0-stats">Bank: $500 | Bet: $0</div>
+                <div class="cards-container" id="p0-cards"></div>
+                <button class="bail-btn" id="bail-0" onclick="bailout(0)" style="display:none;">Bailout (+$500)</button>
+            </div>
+            <div class="player-box" id="p1-box">
+                <input type="text" class="name-input" id="p1-name" value="Player 2" onchange="updateNames()">
+                <div class="hand-title" id="p1-title">Score: 0</div>
+                <div class="player-stats" id="p1-stats">Bank: $500 | Bet: $0</div>
+                <div class="cards-container" id="p1-cards"></div>
+                <button class="bail-btn" id="bail-1" onclick="bailout(1)" style="display:none;">Bailout (+$500)</button>
+            </div>
+            <div class="player-box" id="p2-box">
+                <input type="text" class="name-input" id="p2-name" value="Player 3" onchange="updateNames()">
+                <div class="hand-title" id="p2-title">Score: 0</div>
+                <div class="player-stats" id="p2-stats">Bank: $500 | Bet: $0</div>
+                <div class="cards-container" id="p2-cards"></div>
+                <button class="bail-btn" id="bail-2" onclick="bailout(2)" style="display:none;">Bailout (+$500)</button>
+            </div>
+            <div class="player-box" id="p3-box">
+                <input type="text" class="name-input" id="p3-name" value="Player 4" onchange="updateNames()">
+                <div class="hand-title" id="p3-title">Score: 0</div>
+                <div class="player-stats" id="p3-stats">Bank: $500 | Bet: $0</div>
+                <div class="cards-container" id="p3-cards"></div>
+                <button class="bail-btn" id="bail-3" onclick="bailout(3)" style="display:none;">Bailout (+$500)</button>
+            </div>
+        </div>
+        <div class="dashboard">
+            <div id="status-message">Change names, place bets, or click Deal Cards!</div>
+            <div class="btn-group">
+                <button class="bet-btn" id="b0-btn" onclick="placeBet(0, 10)">P1 +$10</button>
+                <button class="all-in-btn" id="allin0-btn" onclick="placeBet(0, 'all')">P1 All-In</button> |
+                <button class="bet-btn" id="b1-btn" onclick="placeBet(1, 10)">P2 +$10</button>
+                <button class="all-in-btn" id="allin1-btn" onclick="placeBet(1, 'all')">P2 All-In</button> |
+                <button class="bet-btn" id="b2-btn" onclick="placeBet(2, 10)">P3 +$10</button>
+                <button class="all-in-btn" id="allin2-btn" onclick="placeBet(2, 'all')">P3 All-In</button> |
+                <button class="bet-btn" id="b3-btn" onclick="placeBet(3, 10)">P4 +$10</button>
+                <button class="all-in-btn" id="allin3-btn" onclick="placeBet(3, 'all')">P4 All-In</button>
+            </div>
+            <div class="btn-group">
+                <button id="deal-btn" onclick="startRound()">Deal Cards 🃏</button>
+                <button id="hit-btn" onclick="hit()" disabled>Hit ＋</button>
+                <button id="double-btn" onclick="doubleDown()" disabled>Double Down 💰</button>
+                <button id="stand-btn" onclick="stand()" disabled>Stand ✋</button>
+                <button id="reset-btn" onclick="resetEntireGame()">Reset Table 🔄</button>
+            </div>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>

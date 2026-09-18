@@ -15,12 +15,29 @@
         .name-input { background: #000; border: 1px solid #ffd700; color: white; border-radius: 4px; padding: 4px; width: 85%; text-align: center; font-weight: bold; }
         .hand-title { font-size: 0.95rem; color: #ffd700; margin: 5px 0; font-weight: bold; }
         .player-stats { font-size: 0.8rem; margin-bottom: 5px; }
-        .cards-container { display: flex; justify-content: center; gap: 4px; min-height: 80px; }
-        .card { background: white; color: black; width: 50px; height: 75px; border-radius: 6px; display: flex; flex-direction: column; justify-content: space-between; padding: 4px; box-sizing: border-box; font-size: 1rem; font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
-        .card .suit-center { font-size: 1.4rem; align-self: center; }
+        .cards-container { display: flex; justify-content: center; gap: 4px; min-height: 105px; }
+        
+        /* Cleaned Up & Scaled Up 20% Card Styles */
+        .card { 
+            background: white; 
+            color: black; 
+            width: 65px;         
+            height: 98px;        
+            border-radius: 8px;  
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            padding: 5px; 
+            box-sizing: border-box; 
+            font-size: 1.25rem;  
+            font-weight: bold; 
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.5); 
+        }
+        .card .suit-center { font-size: 1.8rem; align-self: center; }
         .card .corner-bottom { transform: rotate(180deg); }
         .red { color: #d12c2c; }
         .hidden-card { background: linear-gradient(135deg, #7f8c8d 25%, #2c3e50 25%, #2c3e50 50%, #7f8c8d 50%, #2c3e50 100%); background-size: 8px 8px; border: 1px solid white; }
+        
         .dashboard { background: rgba(0,0,0,0.5); padding: 12px; border-radius: 10px; }
         #status-message { font-size: 1.1rem; margin-bottom: 10px; min-height: 22px; color: #ffd700; }
         .btn-group { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
